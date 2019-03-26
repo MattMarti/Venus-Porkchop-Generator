@@ -99,6 +99,9 @@ F = (1/sqrtomxsq^3) * (...
     - tau)
 
 % Lambert Equation 4
-F = phi(x) + phi(y) + N*pi - tau
+F = phi(x) + phi(y) + N*pi - 
+
+% Looks like these equations for the F don't result in zero when given the
+% true x and y values. This is broken! Or I'm wrong.
 
 

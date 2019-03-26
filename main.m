@@ -19,7 +19,7 @@
 addpath('rvhistgen_functions');
 addpath('Ephemeris');
 addpath('Test');
-addpath('Lambert2');
+addpath('Lambert');
 clear, clc
 
 
@@ -28,8 +28,8 @@ clear, clc
 % Ephemeris files parameters
 fname_Venus = 'Ephemeris/Positions_until_2125/Venus.txt'; % Venus Ephemerides file
 fname_Earth = 'Ephemeris/Positions_until_2125/Earth.txt'; % Earth Ephemerides file
-fname_Venus = 'Ephemeris/Positions_Truncated/Venus.csv'; % Venus Ephemerides file
-fname_Earth = 'Ephemeris/Positions_Truncated/Earth.csv'; % Earth Ephemerides file
+% fname_Venus = 'Ephemeris/Positions_Truncated/Venus.csv'; % Venus Ephemerides file
+% fname_Earth = 'Ephemeris/Positions_Truncated/Earth.csv'; % Earth Ephemerides file
 EorVflag = 1; % True: Destination is venus.
 days_per_index = 1; % Number of days per line of data
 
