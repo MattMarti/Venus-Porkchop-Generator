@@ -1,4 +1,4 @@
-function plottransferorbit( mu, x1, t1, x2, t2, fig, longwayflag, hyperflag )
+function plottransferorbit( mu, x1, t1, x2, t2, fig, ccwflag, hyperflag )
 % Plots the transfer orbit from Earth to Venus
 % 
 % @author: Matt Marti
@@ -25,7 +25,9 @@ venusorbithist = rvhistgen(thistplanetorbit,t1,x2,mu);
 % Compute p-iteration
 r1vec = x1(1:3);
 r2vec = x2(1:3);
-[v1vec, v2vec] = piteration(mu, r1vec, r2vec, tof, longwayflag, ...
+v1vec = x1(4:6);
+v2vec = x2(4:6);
+[v1vec, v2vec] = piteration(mu, r1vec, r2vec, tof, ccwflag, ...
     hyperflag, plotflag);
 v1vec(2) = v1vec(2);
 x1trans = [r1vec; v1vec];

@@ -2,14 +2,26 @@
 % 
 % Writes constant values to local workspace
 
-MU_SUN = 1.32712440018e11; % km^3/s^2
+% Delta-V computing parameters
 MAX_DAYS_TO_TRAVEL = 400; % Don't bother computing more than this
 KMAX_PITERATION = 25; % p-iteratoin max halving steps
 IMAX_PITERATION = 50; % p-iteration max number iterations
 DELTAV_MAX_CONSIDER = 10; % Only display deltav values up to 50 km/s
 
+% Fixed-Point Iteration parameters
+IMAX_FP_PITERATION = 1000;
+PRECISION_FP_PITERATION = 1e-6;
+SPACING_FP_PITERATION = 1e-3;
 
-GRAVCONST = 6.674e-11; % [m^3/kg/s^2] Gravitational Constant for Earth
+% Lambert parameters
+IMAX_LAMBERT = 1000;
+PRECISION_LAMBERT = 1e-6;
+PARABOLIC_TOLERANCE_LAMBERT = 1e-4;
+SIGMAP_IMAX_LAMBERT = 16;
+
+% Universe constants
+MU_SUN = 1.32712440018e11; % km^3/s^2
+GRAVCONST = 6.674e-11; % [m^3/kg/s^2] Gravitational Constant
 
 % Earth Constants
 MASSEARTH = 5.972e24; % [kg] Earth mass
