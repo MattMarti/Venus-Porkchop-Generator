@@ -1,40 +1,30 @@
-function plottransferorbit( mu, x1, t1, x2, t2, fig, ccwflag, hyperflag )
+function plottransferorbit( mu, x1, t1, x2, t2, v1, fig )
 % Plots the transfer orbit from Earth to Venus
 % 
 % @author: Matt Marti
-% @date: 2018-11-26
+% @date: 2019-03-28
 
 constants
-plotflag = 0;
+
 
 %% Calculate planet orbits
 
 % Time of flight
-tof = t2 - t1;
-thisttrans = (t1:3600:t2)';
-thistplanetorbit = t1 + 24*3600*(0:1:400)';
+thisttrans = t1:3600:t2;
+thistplanetorbit = t1 + 24*3600*(0:1:400);
 
 % Plot Earth Orbit
-earthorbithist = rvhistgen(thistplanetorbit,t1,x1,mu);
+earthorbithist = rvhistgen_sundman(mu, x1, t1, thistplanetorbit)';
 
 % Plot Venus Orbit
-venusorbithist = rvhistgen(thistplanetorbit,t1,x2,mu);
+venusorbithist = rvhistgen_sundman(mu, x2, t1, thistplanetorbit)';
 
 
 %% Calculate transfer orbit
-% Compute p-iteration
-r1vec = x1(1:3);
-r2vec = x2(1:3);
-v1vec = x1(4:6);
-v2vec = x2(4:6);
-[v1vec, v2vec] = piteration(mu, r1vec, r2vec, tof, ccwflag, ...
-    hyperflag, plotflag);
-v1vec(2) = v1vec(2);
-x1trans = [r1vec; v1vec];
-x2trans = [r2vec; v2vec];
 
 % Orbit time history
-xhisttrans = rvhistgen(thisttrans,t1,x1trans,mu);
+xtrans = [x1(1:3); v1];
+xhisttrans = rvhistgen_sundman(mu, xtrans, t1, thisttrans)';
 
 
 %% Plot Planet Orbits
@@ -65,10 +55,9 @@ axis equal
 % Plot Transfer
 figure(fig)
 plot(xhisttrans(:,1), xhisttrans(:,2), 'r', 'linewidth', 1.25);
-grid on, grid minor
 axis(1e8*[-2, 2, -2, 2])
+grid on, grid minor
 axis equal
 drawnow
 
 end
-

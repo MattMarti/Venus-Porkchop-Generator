@@ -17,11 +17,8 @@ function deltav = transfer_deltav(X_Earth, X_Venus, plotflag, EorVflag)
 % deltav   - double
 %            Delta V required to transfer
 % 
-% DEPENDENCIES
-% piteration.m v 2018-11-26
-% 
 % @author: Matt Marti
-% @date: 2018-03-18
+% @date: 2018-03-29
 
 if nargin < 4
     EorVflag = 1;
@@ -64,7 +61,6 @@ if thetaV < 0, thetaV = thetaV + 360; end
 
 % Try to compute p-iteration for short method
 passflag_short = 1;
-hyperflag_short = 0;
 try
     [v1_short, v2_short] = piteration(mu, r1, r2, tof, 0, 0, 0);
     if prod(isnan(v2_short))
@@ -73,7 +69,6 @@ try
 catch
     try
         [v1_short, v2_short] = piteration(mu, r1, r2, tof, 0, 1, 0);
-        hyperflag_short = 1;
     catch
         v1_short = inf;
         v2_short = inf;
@@ -88,7 +83,6 @@ deltav_short       = deltav_from_short + deltav_to_short;
 
 % Try to compute p-iteration for Long method
 pass_long = 1;
-hyperflag_long = 0;
 try
     [v1_long, v2_long] = piteration(mu, r1, r2, tof, 1, 0, 0);
     if prod(isnan(v2_long))
@@ -97,7 +91,6 @@ try
 catch
     try
         [v1_long, v2_long] = piteration(mu, r1, r2, tof, 1, 1, 0);
-        hyperflag_long = 1;
     catch
         v1_long = inf;
         v2_long = inf;
@@ -187,31 +180,13 @@ catch
     deltav = inf;
 end
 
-% Determine if transfer orbit is hyperbolic
-% hyperflag = hyperflag_short || hyperflag_long;
-hyperflag = 0;
-try
-    xequinoctial = rv2equinoctial([r1;v1],mu);
-    e = norm(xequinoctial(2:3));
-    if e + 1e-6 >= 1
-        hyperflag = 1;
-    end
-catch
-    hyperflag = 1;
-    5;
-end
-
-if ~hyperflag && plotflag
+% Plot transfer orbit
+if plotflag
     try
-        plottransferorbit( mu, x1, t1, x2, t2, 1, longwayflag, 0 );
-        5;
+        plottransferorbit( mu, x1, t1, x2, t2, v1, 1 );
     catch
         5;
     end
-end
-
-if abs(x2(1) - -95115290.8270729) < 1e-1
-    5;
 end
 
 end

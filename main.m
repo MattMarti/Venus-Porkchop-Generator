@@ -37,7 +37,7 @@ days_per_index = 1; % Number of days per line of data
 use_mat_file = 0; % flag to load data directly from file to avoid math
 % matfile_load_name = 'porkchop_Earth_trunc.mat';
 % matfile_load_name = 'porkchop_Venus_trunc.mat';
-plot_progress_flag = 0; % Whether to plot orbits during computations
+plot_progress_flag = 1; % Whether to plot orbits during computations
 
 % What to plot
 min_days_from_2020 = 0*365; % Start date for plot

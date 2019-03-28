@@ -33,7 +33,7 @@ if nargin < 6
     K = 16;
 end
 if nargin < 5
-    tol = 1e-3;
+    tol = 1e-15;
 end
 assert(numel(t0) == 1, 'Incorrect size of argument ''t0''');
 assert(numel(K) == 1, 'Incorrect size of argument ''K''');
@@ -44,6 +44,9 @@ assert(size(xrv0vec,1) == 6 && size(xrv0vec,2) == 1, ...
 assert(numel(mu) == 1, 'Incorrect size of argument ''mu''');
 assert(size(thist,1) == 1, ...
     'argument ''thist'' is not either single column or single row vector');
+
+% Time of flight calculation
+thist = thist - t0;
 
 % Magnitudes of inputs
 r0vec = xrv0vec(1:3);
@@ -104,14 +107,16 @@ while i < maxiter
     % Increment x
     terri = sqrtmuthist - sqrtmuti;
     deltax = sqrtmudtidx .\ terri;
-    xhist = xhist + deltax;
+    xhistnp1 = xhist + deltax;
     
     % Break condition
-    if abs(terri) < tol, break; end
+    if norm(deltax)/norm(xhist) < tol, break; end
     
     % Iterate
+    xhist = xhistnp1;
     i = i + 1;
 end
+xhist = xhistnp1;
 
 % Evaluate f and g
 xsqhist = xhist.^2;
