@@ -45,9 +45,9 @@ plot(venusorbithist(:,1), venusorbithist(:,2), 'color', [1 .5 0], ...
 plot(x2(1), x2(2), '.', 'color', [1 .5 0], 'Markersize', 20)
 
 % Make grid in case of exception
-grid on, grid minor
 axis(1e8*[-2, 2, -2, 2])
 axis equal
+grid on, grid minor
 
 
 %% Plot transition orbit
@@ -56,7 +56,6 @@ axis equal
 figure(fig)
 plot(xhisttrans(:,1), xhisttrans(:,2), 'r', 'linewidth', 1.25);
 axis(1e8*[-2, 2, -2, 2])
-grid on, grid minor
 axis equal
 drawnow
 

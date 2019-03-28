@@ -55,10 +55,10 @@ for i = 1:nfrom
                 && data_Venus(j,1) - data_Earth(i,1) <= max_seconds
             
             % Compute the delta v
-            deltav(i,j) = transfer_deltav(data_Earth(i,:), data_Venus(j,:), plotflag, EorVflag);
-            
-            if deltav(i,j) < 10
-                5;
+            try
+                deltav(i,j) = transfer_deltav(data_Earth(i,:), data_Venus(j,:), plotflag, EorVflag);
+            catch
+                deltav(i,j) = inf;
             end
         else
             deltav(i,j) = NaN;

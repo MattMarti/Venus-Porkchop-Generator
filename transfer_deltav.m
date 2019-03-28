@@ -50,95 +50,75 @@ r1 = x1(1:3);
 r2 = x2(1:3);
 tof = t2(1) - t1(1);
 
-% Debugging place
-if x2(1) < -106913827 && x2(2) < 9075877
-     5;
-end
-thetaE = atan2d(x1(2), x1(1));
-if thetaE < 0, thetaE = thetaE + 360; end
-thetaV = atan2d(x2(2), x2(1));
-if thetaV < 0, thetaV = thetaV + 360; end
-
-% Try to compute p-iteration for short method
-passflag_short = 1;
+% Do Lambert Counter-Clockwise
+passflag_ccw = 1;
 try
-    [v1_short, v2_short] = piteration(mu, r1, r2, tof, 0, 0, 0);
-    if prod(isnan(v2_short))
-        [v1_short, v2_short] = piteration(mu, r1, r2, tof, 0, 1, 0);
+    ccwflag = 1;
+    tol = 5e-3;
+    K = 32;
+    [v1_ccw, v2_ccw] = lambert(mu, r1, r2, tof, ccwflag, tol, K);
+    if sum(isnan(v2_ccw))
+        v1_ccw = inf;
+        v2_ccw = inf;
     end
 catch
-    try
-        [v1_short, v2_short] = piteration(mu, r1, r2, tof, 0, 1, 0);
-    catch
-        v1_short = inf;
-        v2_short = inf;
-        passflag_short = 0;
-    end
+    v1_ccw = inf;
+    v2_ccw = inf;
+    passflag_ccw = 0;
 end
 
-% Delta-V short way
-deltav_from_short  = norm(x1(4:6) - v1_short);
-deltav_to_short    = norm(x2(4:6) - v2_short);
-deltav_short       = deltav_from_short + deltav_to_short;
+% Delta-V Counter-Clockwise
+deltav_from_ccw  = norm(x1(4:6) - v1_ccw);
+deltav_to_ccw    = norm(x2(4:6) - v2_ccw);
+deltav_ccw       = deltav_from_ccw + deltav_to_ccw;
 
 % Try to compute p-iteration for Long method
-pass_long = 1;
+pass_cw = 1;
 try
-    [v1_long, v2_long] = piteration(mu, r1, r2, tof, 1, 0, 0);
-    if prod(isnan(v2_long))
-        [v1_long, v2_long] = piteration(mu, r1, r2, tof, 1, 1, 0);
+    ccwflag = 0;
+    tol = 5e-3;
+    K = 32;
+    [v1_cw, v2_cw] = lambert(mu, r1, r2, tof, ccwflag, tol, K);
+    if sum(isnan(v2_cw))
+        v1_cw = inf;
+        v2_cw = inf;
     end
 catch
-    try
-        [v1_long, v2_long] = piteration(mu, r1, r2, tof, 1, 1, 0);
-    catch
-        v1_long = inf;
-        v2_long = inf;
-        pass_long = 0;
-    end
+    v1_cw = inf;
+    v2_cw = inf;
+    pass_cw = 0;
 end
 
 % Delta-V long way
-deltav_from_long = norm(x1(4:6) - v1_long);
-deltav_to_long   = norm(x2(4:6) - v2_long);
-deltav_long = deltav_from_long + deltav_to_long;
-
-% Debugging place to pause
-if abs((thetaV - thetaE) - 180) < 1
-    5;
-end
-if abs((thetaV - thetaE) - 225) < 1
-    5;
-end
-if abs((thetaV - thetaE) - 178) < 1
-    5;
-end
-if abs((thetaV - thetaE) - 5) < 1
-    5;
-end
+deltav_from_cw = norm(x1(4:6) - v1_cw);
+deltav_to_cw   = norm(x2(4:6) - v2_cw);
+deltav_cw = deltav_from_cw + deltav_to_cw;
 
 % If both long way and short way p-iteration threw exception
-if ~pass_long && ~passflag_short
+if ~pass_cw && ~passflag_ccw
     deltav = inf;
     return;
 end
 
 % Determine the mininum deltav requirement
-longwayflag = 0;
-if deltav_short <= deltav_long
-    v1          = v1_short;
-    v2          = v2_short;
-    deltav      = deltav_short;
-    deltav_from = deltav_from_short; %#ok
-    deltav_to   = deltav_to_short; %#ok
+if deltav_ccw <= deltav_cw
+    v1          = v1_ccw;
+    v2          = v2_ccw;
+    deltav      = deltav_ccw;
+    deltav_from = deltav_from_ccw; %#ok
+    deltav_to   = deltav_to_ccw; %#ok
 else
-    v1          = v1_long;
-    v2          = v2_long;
-    deltav      = deltav_long;
-    deltav_from = deltav_from_long; %#ok
-    deltav_to   = deltav_to_long; %#ok
-    longwayflag = 1;
+    v1          = v1_cw;
+    v2          = v2_cw;
+    deltav      = deltav_cw;
+    deltav_from = deltav_from_cw; %#ok
+    deltav_to   = deltav_to_cw; %#ok
 end
+
+% Check that the solution is correct
+xrv = rvhistgen_sundman(mu, [x1(1:3); v1], t1, t2);
+assert(max(abs(xrv(1:3) - x2(1:3))) < MAX_POSITION_ERROR, ...
+    'Bad Lambert solution');
 
 % Calculate delta-v costs/savings from transfer and aerocapture
 v1inf = norm(v1 - x1(4:6))*1000;

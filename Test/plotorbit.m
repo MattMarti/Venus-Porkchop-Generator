@@ -41,10 +41,10 @@ xrvhist = rvhistgen_sundman(mu, x, thist(1), thist)';
 figure(fig)
 
 % Plot Orbit
-plot(xrvhist(1,:), xrvhist(2,:), 'color', color, ...
+plot(xrvhist(:,1), xrvhist(:,2), 'color', color, ...
     'linewidth', 1.25);
 hold on
-plot(xrvhist(1,1), xrvhist(2,1), '.', 'color', color, 'Markersize', 20)
+plot(xrvhist(1,1), xrvhist(1,2), '.', 'color', color, 'Markersize', 20)
 
 end
 

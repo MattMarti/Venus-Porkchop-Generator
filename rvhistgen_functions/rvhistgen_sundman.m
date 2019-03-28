@@ -6,6 +6,8 @@ function [xrvhist] = rvhistgen_sundman(mu, xrv0vec, t0, thist, tol, K)
 % keplerian elements or equinoctial elements is that Universal Variables
 % are well behaved in both elliptical and hyperbolic orbits.
 % 
+% Note that this function is liable to diverge, and I don't know why.
+% 
 % @arg
 % mu      - double
 %           2-body gravitational parameter
@@ -27,6 +29,10 @@ function [xrvhist] = rvhistgen_sundman(mu, xrv0vec, t0, thist, tol, K)
 % 
 % @author: Matt Marti
 % @date: 2019-03-27
+
+% Constants
+constants;
+tolz = PARABOLIC_TOLERANCE_LAMBERT;
 
 % Input checking
 if nargin < 6
@@ -81,18 +87,17 @@ end
 
 % Solve Universal Time of Flight Equation
 i = 0;
-maxiter = 100;
 sqrtoomu = sqrt(oomu);
 sqrtmuthist = sqrtmu*thist;
-while i < maxiter
+while i < IMAX_LAMBERT
     
     % Compute z
     xsqhist = xhist.^2;
     zhist = ooa*xsqhist; % 4.4-7
     
     % Variables
-    Chist = C_func(zhist, e, tol, K); % Bate 4.4-10
-    Shist = S_func(zhist, e, tol, K); % Bate 4.4-11
+    Chist = C_func(zhist, tolz, K); % Bate 4.4-10
+    Shist = S_func(zhist, tolz, K); % Bate 4.4-11
     
     % Time of flight
     sqrtmuti = r0dotv0.*sqrtoomu.*xsqhist.*Chist ...
@@ -146,30 +151,38 @@ xrvhist = [rvechist; vvechist];
 
 end
 
-function [Chist] = C_func(zhist, e, tol, K) % Bate 4.4-10
-if e <= 1 - tol % Elliptical orbit
-    Chist = (1 - cos(sqrt(zhist))) ./ zhist;
-elseif 1 + tol <= e % Hyperbolic orbit
-    Chist = (1 - cosh(sqrt(-zhist))) ./ zhist;
-else % Parabolic orbit
-    Chist = 0;
-    for k = 0:K
-        Chist = Chist + (-zhist).^k ./ factorial(2*k+2);
+function [ Chist ] = C_func( zhist, tol, K ) % Bate 4.4-10
+Chist = zeros(size(zhist));
+for i = 1:length(zhist)
+    z = zhist(i);
+    if z <= - tol % Elliptical orbit
+        Chist(i) = (1 - cos(sqrt(z))) ./ z;
+    elseif tol <= z % Hyperbolic orbit
+        Chist(i) = (1 - cosh(sqrt(-z))) ./ z;
+    else % Parabolic orbit
+        Chist(i) = 0;
+        for k = 0:K
+            Chist(i) = Chist(i) + (-z).^k ./ factorial(2*k+2);
+        end
     end
 end
 end
 
-function Shist = S_func(zhist, e, tol, K) % Bate 4.4-11
-if e <= 1 - tol % Elliptical orbit
-    sqrtzhist = sqrt(zhist);
-    Shist = (sqrtzhist - sin(sqrtzhist))./(sqrtzhist.^3);
-elseif 1 + tol <= e % Hyperbolic orbit
-    sqrtmzhist = sqrt(-zhist);
-    Shist = (sinh(sqrtmzhist) - sqrtmzhist)./(sqrtmzhist.^3);
-else % Parabolic orbit
-    Shist = 0;
-    for k = 0:K
-        Shist = Shist + (-zhist).^k ./ factorial(2*k+3);
+function [ Shist ] = S_func( zhist, tol, K ) % Bate 4.4-11
+Shist = zeros(size(zhist));
+for i = 1:length(zhist)
+    z = zhist(i);
+    if z <= - tol % Elliptical orbit
+        sqrtz = sqrt(z);
+        Shist(i) = (sqrtz - sin(sqrtz))./(sqrtz.^3);
+    elseif tol <= z % Hyperbolic orbit
+        sqrtmz = sqrt(-z);
+        Shist(i) = (sinh(sqrtmz) - sqrtmz)./(sqrtmz.^3);
+    else % Parabolic orbit
+        Shist(i) = 0;
+        for k = 0:K
+            Shist(i) = Shist(i) + (-z).^k ./ factorial(2*k+3);
+        end
     end
 end
 end

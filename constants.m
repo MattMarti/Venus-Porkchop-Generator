@@ -7,6 +7,7 @@ MAX_DAYS_TO_TRAVEL = 400; % Don't bother computing more than this
 KMAX_PITERATION = 25; % p-iteratoin max halving steps
 IMAX_PITERATION = 50; % p-iteration max number iterations
 DELTAV_MAX_CONSIDER = 10; % Only display deltav values up to 50 km/s
+MAX_POSITION_ERROR = 1e5;
 
 % Fixed-Point Iteration parameters
 IMAX_FP_PITERATION = 1000;
@@ -14,10 +15,10 @@ PRECISION_FP_PITERATION = 1e-6;
 SPACING_FP_PITERATION = 1e-3;
 
 % Lambert parameters
-IMAX_LAMBERT = 1000;
+IMAX_LAMBERT = 25;
 PRECISION_LAMBERT = 1e-6;
 PARABOLIC_TOLERANCE_LAMBERT = 1e-4;
-SIGMAP_IMAX_LAMBERT = 16;
+% SIGMAP_IMAX_LAMBERT = 16;
 
 % Universe constants
 MU_SUN = 1.32712440018e11; % km^3/s^2
