@@ -11,6 +11,7 @@
 
 clear, clc
 constants
+mu_sun = 1.32712440018e11; % km^3/s^2
 
 % Earth state
 t1 = 2461348.5 * 24*3600;
@@ -47,7 +48,7 @@ venusorbithist = rvhistgen(thistplanetorbit,t1,x2,mu_sun);
 % Compute p-iteration
 r1vec = x1(1:3);
 r2vec = x2(1:3);
-[v1vec, v2vec] = piteration(mu_sun, r1vec, r2vec, tof);
+[v1vec, v2vec] = piteration(mu_sun, r1vec, r2vec, tof, 0, 0, 0);
 v1vec(2) = v1vec(2);
 x1trans = [r1vec; v1vec];
 x2trans = [r2vec; v2vec];

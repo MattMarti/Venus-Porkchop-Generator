@@ -23,7 +23,7 @@ function xrvhist = plotorbit(mu, x, thist, fig, color )
 if size(x,2) ~= 1
     x = x';
 end
-if size(thist,2) ~= 1
+if size(thist,1) ~= 1
     thist = thist';
 end
 
@@ -31,7 +31,8 @@ end
 %% Propagate Orbit
 
 % Generate orbit position / velocity time history
-xrvhist = rvhistgen(thist,thist(1),x,mu)';
+% xrvhist = rvhistgen(thist,thist(1),x,mu)';
+xrvhist = rvhistgen_sundman(mu, x, thist(1), thist)';
 
 
 %% Plots
