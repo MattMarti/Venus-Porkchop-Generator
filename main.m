@@ -18,6 +18,8 @@ addpath('Ephemeris');
 addpath('Test');
 addpath('Lambert');
 clear, clc
+constants;
+global DELTAV_MAX_CONSIDER
 
 
 %% Parameters
@@ -44,8 +46,6 @@ max_days_to_travel = 300; % Maximum travel time
 
 
 %% Calculations
-
-constants;
 
 % Earth to Venus or Venus to Earth Status
 fprintf('Earth to Venus flag: %d\n', EorVflag);
@@ -124,7 +124,6 @@ if EorVflag
 else
     save porkchop_2Earth
 end
-deltav_trunc = min(deltav_trunc, DELTAV_MAX_CONSIDER);
 
 % Plot Delta V map
 figure(1)
@@ -136,15 +135,3 @@ xlabel(['Days since ' depart_early]);
 ylabel('Travel time (days)')
 title('Delta V Contour Plot')
 grid on, grid minor
-
-% % Plot Delta V map
-% figure(1)
-% hold off
-% idum = 20*365+6:25*365;
-% contourf(0:length(idum)-1,y,deltav_trunc(idum,:)')
-% colormap jet; % Set the colors of the contour
-% colorbar vert; % Make vertical color bar legend
-% xlabel(['Days since ' dates_from{idum(1)}]);
-% ylabel('Travel time (days)')
-% title('Delta V Contour Plot')
-% grid on, grid minor

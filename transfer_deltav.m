@@ -21,7 +21,7 @@ function deltav = transfer_deltav(X_Earth, X_Venus, plotflag, EorVflag)
 % @date: 2018-03-29
 
 % Constants
-global MU_SUN MAX_POSITION_ERROR MUEARTH REARTH SOIVENUS MUVENUS RVENUS
+global MU_SUN MAX_POSITION_ERROR MUEARTH REARTH SOIVENUS MUVENUS RVENUS SOIEARTH
 mu = MU_SUN;
 
 % Check input
