@@ -28,7 +28,11 @@ function [ d2Sdz2hist ] = d2Sdz2_func( zhist, Chist, Shist, dCdzhist, ...
 % @date: 2019-03-28
 
 % Preallocate
-d2Sdz2hist = zeros(size(zhist));
+if numel(zhist) ~= 1
+    d2Sdz2hist = zeros(size(zhist,1),size(zhist,2));
+else
+    d2Sdz2hist = 0;
+end
 
 % Loop
 for i = 1:length(zhist)
@@ -41,10 +45,12 @@ for i = 1:length(zhist)
         ooz = 1/z;
         d2Sdz2 = 0.5*ooz*(dCdz - 3*dSdz) - 0.5*ooz*ooz*(C - 3*S);
     else % Parabolic orbit
-        d2Sdz2 = 2/factorial(7);
+        denom_i = 7*6*5*4*3*2;
+        d2Sdz2 = 2/denom_i;
         for k = 1:K
+            denom_i = denom_i * (2*k+7)*(2*k+6);
             d2Sdz2 = d2Sdz2 ...
-                + (k+1)*(k+2)*(-z)^(k) / factorial(2*k+7);
+                + (k+1)*(k+2)*(-z)^(k) / denom_i; % factorial(2*k+7);
         end
     end
     d2Sdz2hist(i) = d2Sdz2;

@@ -1,25 +1,27 @@
 %% constants.m
 % 
 % Writes constant values to local workspace
+global MAX_DAYS_TO_TRAVEL KMAX_PITERATION IMAX_PITERATION DELTAV_MAX_CONSIDER MAX_POSITION_ERROR IMAX_FP_PITERATION PRECISION_FP_PITERATION SPACING_FP_PITERATION IMAX_LAMBERT HALVINGMAX_LAMBERT PRECISION_LAMBERT PARABOLIC_TOLERANCE_LAMBERT MU_SUN GRAVCONST MASSEARTH REARTH MUEARTH SOIEARTH MASSVENUS RVENUS MUVENUS SOIVENUS
 
 % Delta-V computing parameters
-MAX_DAYS_TO_TRAVEL = 400; % Don't bother computing more than this
-KMAX_PITERATION = 25; % p-iteratoin max halving steps
-IMAX_PITERATION = 50; % p-iteration max number iterations
+MAX_DAYS_TO_TRAVEL = 250; % Don't bother computing more than this
 DELTAV_MAX_CONSIDER = 10; % Only display deltav values up to 50 km/s
 MAX_POSITION_ERROR = 1e5;
 
-% Fixed-Point Iteration parameters
-IMAX_FP_PITERATION = 1000;
+% P-Iteration parameters
+KMAX_PITERATION = 25; % p-iteratoin max halving steps
+IMAX_PITERATION = 50; % p-iteration max number iterations
+
+% Fixed-Point P-Iteration parameters
+IMAX_FP_PITERATION = 100;
 PRECISION_FP_PITERATION = 1e-6;
 SPACING_FP_PITERATION = 1e-3;
 
 % Lambert parameters
-IMAX_LAMBERT = 100;
+IMAX_LAMBERT = 50;
 HALVINGMAX_LAMBERT = 25;
 PRECISION_LAMBERT = 1e-6;
-PARABOLIC_TOLERANCE_LAMBERT = 1e-4;
-% SIGMAP_IMAX_LAMBERT = 16;
+PARABOLIC_TOLERANCE_LAMBERT = 5e-3;
 
 % Universe constants
 MU_SUN = 1.32712440018e11; % km^3/s^2

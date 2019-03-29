@@ -19,7 +19,11 @@ function [ Chist ] = C_func( zhist, tol, K )
 % @date: 2019-03-28
 
 % Preallocate
-Chist = zeros(size(zhist));
+if numel(zhist) ~= 1
+    Chist = zeros(size(zhist,1),size(zhist,2));
+else
+    Chist = 0;
+end
 
 % Loop
 for i = 1:length(zhist)
@@ -30,8 +34,10 @@ for i = 1:length(zhist)
         Chist(i) = (1 - cosh(sqrt(-z))) ./ z;
     else % Series approximation for Parabolic orbit
         Chist(i) = 0;
+        denom_i = 1;
         for k = 0:K
-            Chist(i) = Chist(i) + (-z).^k ./ factorial(2*k+2);
+            denom_i = denom_i * (2*k+2) * (2*k+1);
+            Chist(i) = Chist(i) + (-z)^k / denom_i; % factorial(2*k+2);
         end
     end
 end

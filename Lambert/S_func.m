@@ -19,7 +19,11 @@ function [ Shist ] = S_func( zhist, tol, K )
 % @date: 2019-03-28
 
 % Preallocate
-Shist = zeros(size(zhist));
+if numel(zhist) ~= 1
+    Shist = zeros(size(zhist,1),size(zhist,2));
+else
+    Shist = 0;
+end
 
 % Loop
 for i = 1:length(zhist)
@@ -32,8 +36,10 @@ for i = 1:length(zhist)
         Shist(i) = (sinh(sqrtmz) - sqrtmz)./(sqrtmz.^3);
     else % Series approximation for Parabolic orbit
         Shist(i) = 0;
+        denom_i = 1;
         for k = 0:K
-            Shist(i) = Shist(i) + (-z).^k ./ factorial(2*k+3);
+            denom_i = denom_i * (2*k+3)*(2*k+2);
+            Shist(i) = Shist(i) + (-z).^k ./ denom_i; % factorial(2*k+3);
         end
     end
 end

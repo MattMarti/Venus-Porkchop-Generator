@@ -33,7 +33,7 @@ function deltav = porkchop(data_Earth, data_Venus, plotflag, EorVflag)
 %% Data
 
 % Constants
-constants;
+global MAX_DAYS_TO_TRAVEL
 
 max_seconds = MAX_DAYS_TO_TRAVEL*3600*24;
 
@@ -62,7 +62,7 @@ for i = 1:nfrom
             % Compute the delta v
             try
                 deltav(i,j) = transfer_deltav(data_Earth(i,:), data_Venus(j,:), plotflag, EorVflag);
-            catch
+            catch err %#ok
                 deltav(i,j) = inf;
             end
         else

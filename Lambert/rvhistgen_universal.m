@@ -38,7 +38,7 @@ function [xrvhist] = rvhistgen_universal(mu, xrv0vec, t0, thist, tol, K)
 % @date: 2019-03-27
 
 % Constants
-constants;
+global PARABOLIC_TOLERANCE_LAMBERT IMAX_LAMBERT HALVINGMAX_LAMBERT
 tolz = PARABOLIC_TOLERANCE_LAMBERT;
 
 % Input checking

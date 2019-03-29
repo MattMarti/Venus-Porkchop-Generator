@@ -20,13 +20,14 @@ function deltav = transfer_deltav(X_Earth, X_Venus, plotflag, EorVflag)
 % @author: Matt Marti
 % @date: 2018-03-29
 
+% Constants
+global MU_SUN MAX_POSITION_ERROR MUEARTH REARTH SOIVENUS MUVENUS RVENUS
+mu = MU_SUN;
+
+% Check input
 if nargin < 4
     EorVflag = 1;
 end
-
-% Constants
-constants
-mu = MU_SUN;
 
 % Decide if earth or venus target
 if EorVflag

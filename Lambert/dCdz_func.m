@@ -23,7 +23,11 @@ function [ dCdzhist ] = dCdz_func( zhist, Chist, Shist, tol, K )
 % @date: 2019-03-28
 
 % Preallocate
-dCdzhist = zeros(size(zhist));
+if numel(zhist) ~= 1
+    dCdzhist = zeros(size(zhist,1),size(zhist,2));
+else
+    dCdzhist = 0;
+end
 
 % Loop
 for i = 1:length(zhist)
@@ -33,10 +37,12 @@ for i = 1:length(zhist)
     if tol <= z || z <= - tol % Elliptical or Hyperbolic orbit
         dCdz = 0.5*(1 - z*S - 2*C)/z; % Bate 5.3-21
     else % Parabolic orbit
-        dCdz = - 1/factorial(4);
+        denom_i = 4*3*2;
+        dCdz = - 1/denom_i;
         for k = 1:K
+            denom_i = denom_i * (2*k+4)*(2*k+3);
             dCdz = dCdz ...
-                + (k+1)*(-1)^(k-1)*z^k/factorial(2*k+4); % Bate 5.3-24
+                + (k+1)*(-1)^(k-1)*z^k/denom_i;%factorial(2*k+4); % Bate 5.3-24
         end
     end
     dCdzhist(i) = dCdz;

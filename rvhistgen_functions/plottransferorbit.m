@@ -4,8 +4,6 @@ function plottransferorbit( mu, x1, t1, x2, t2, v1, fig )
 % @author: Matt Marti
 % @date: 2019-03-28
 
-constants
-
 
 %% Calculate planet orbits
 
