@@ -47,6 +47,9 @@ max_days_to_travel = 300; % Maximum travel time
 
 constants;
 
+% Earth to Venus or Venus to Earth Status
+fprintf('Earth to Venus flag: %d\n', EorVflag);
+
 % Data file
 if ~use_mat_file
     
@@ -59,7 +62,9 @@ if ~use_mat_file
     data_Venus(:,1) = data_Venus(:,1) * 3600*24; % Convert to seconds
     
     % Run Delta-V calculations
+    tic
     deltav = porkchop(data_Earth, data_Venus, plot_progress_flag, EorVflag);
+    toc
     
     % Unit convertions to stuff that the save file has
     data_Earth(:,1) = data_Earth(:,1) / 3600/24; % Convert back to days
@@ -124,7 +129,7 @@ deltav_trunc = min(deltav_trunc, DELTAV_MAX_CONSIDER);
 % Plot Delta V map
 figure(1)
 hold off
-contourf(x,y,deltav_trunc')
+contourf(x,y,min(deltav_trunc, DELTAV_MAX_CONSIDER)')
 colormap jet; % Set the colors of the contour
 colorbar vert; % Make vertical color bar legend
 xlabel(['Days since ' depart_early]);

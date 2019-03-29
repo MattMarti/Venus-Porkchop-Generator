@@ -41,8 +41,13 @@ max_seconds = MAX_DAYS_TO_TRAVEL*3600*24;
 %% Calculate delta v
 
 % Preallocate data
-nfrom = size(data_Earth, 1);
-nto = size(data_Venus, 1);
+if EorVflag
+    nfrom = size(data_Earth, 1);
+    nto = size(data_Venus, 1);
+else
+    nfrom = size(data_Venus, 1);
+    nto = size(data_Earth, 1);
+end
 deltav = zeros(nfrom, nto);
 
 % Open progress bar
