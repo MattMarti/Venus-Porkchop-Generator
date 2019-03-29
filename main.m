@@ -10,11 +10,8 @@
 % 
 % Assumes two body mechanics for the spacecraft and Sun bodies.
 % 
-% DEPENDENCIES
-% porkchop.m v 2018-11-07
-% 
 % @author: Matt Marti
-% @date: 2018-11-07
+% @date: 2018-03-29
 
 addpath('rvhistgen_functions');
 addpath('Ephemeris');

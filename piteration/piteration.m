@@ -39,6 +39,8 @@ function [v1vec, v2vec] = piteration(mu, r1vec, r2vec, tof, longwayflag,...
 % @author: Matt Marti
 % @date: 2018-12-03
 
+error('Trust me, you''re better off not using this function. <3 Matt');
+
 constants;
 
 if size(r1vec, 1) == 1

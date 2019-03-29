@@ -17,13 +17,13 @@ function [a, e, M0, omega, i, Omega, nu] = orbital_elements(mu, x)
 % M0    - double
 %         Mean anomoly
 % omega - double
-%         Argument of Perigee (deg)
+%         Argument of Perigee (rad)
 % i     - double
-%         Inclination (deg)
+%         Inclination (rad)
 % Omega - double
-%         Longitude of Ascending Node (deg)
+%         Longitude of Ascending Node (rad)
 % nu    - double
-%         True Anomoly (deg)
+%         True Anomoly (rad)
 % 
 % DEPENDENCIES
 % 

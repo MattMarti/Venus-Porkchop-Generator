@@ -32,7 +32,7 @@ end
 
 % Generate orbit position / velocity time history
 % xrvhist = rvhistgen(thist,thist(1),x,mu)';
-xrvhist = rvhistgen_sundman(mu, x, thist(1), thist)';
+xrvhist = rvhistgen_universal(mu, x, thist(1), thist)';
 
 
 %% Plots

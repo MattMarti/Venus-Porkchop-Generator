@@ -116,7 +116,7 @@ else
 end
 
 % Check that the solution is correct
-xrv = rvhistgen_sundman(mu, [x1(1:3); v1], t1, t2);
+xrv = rvhistgen_universal(mu, [x1(1:3); v1], t1, t2);
 assert(max(abs(xrv(1:3) - x2(1:3))) < MAX_POSITION_ERROR, ...
     'Bad Lambert solution');
 

@@ -1,4 +1,4 @@
-function [xrvhist] = satpos(mu, ephem, thist)
+function [xrvhist] = satpos(mu, ephem, t0, thist)
 %SATPOS Returns the ECEF position of a GPS SV
 % Returns the Cartesian coordinates position of an orbiting body using the
 % given set of ephemerides. Uses the keplerian orbital parameters to
@@ -9,12 +9,11 @@ function [xrvhist] = satpos(mu, ephem, thist)
 %         massive body gravitational parameter
 % ephem - 6x1 double array
 %         Vector of ephemerides that describe SV orbit
+% t0    - double
+%         Epoch time
 % thist - 1xN double array
 %         Time history at which to measure SV position. First value should
 %         be the time of ephemeris
-% coord - string
-%         corrdinate system to obtain orbit data in, default: ECIF
-%         - Options: 'ECEF', 'ECIF'
 % 
 % OUTPUTS
 % xrv - Nx6 double array

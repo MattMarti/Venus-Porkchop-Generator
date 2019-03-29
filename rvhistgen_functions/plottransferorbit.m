@@ -14,17 +14,17 @@ thisttrans = t1:3600:t2;
 thistplanetorbit = t1 + 24*3600*(0:1:400);
 
 % Plot Earth Orbit
-earthorbithist = rvhistgen_sundman(mu, x1, t1, thistplanetorbit)';
+earthorbithist = rvhistgen_universal(mu, x1, t1, thistplanetorbit)';
 
 % Plot Venus Orbit
-venusorbithist = rvhistgen_sundman(mu, x2, t1, thistplanetorbit)';
+venusorbithist = rvhistgen_universal(mu, x2, t1, thistplanetorbit)';
 
 
 %% Calculate transfer orbit
 
 % Orbit time history
 xtrans = [x1(1:3); v1];
-xhisttrans = rvhistgen_sundman(mu, xtrans, t1, thisttrans)';
+xhisttrans = rvhistgen_universal(mu, xtrans, t1, thisttrans)';
 
 
 %% Plot Planet Orbits
