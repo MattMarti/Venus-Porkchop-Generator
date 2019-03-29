@@ -1,11 +1,11 @@
-function deltav = transfer_deltav(X_Earth, X_Venus, plotflag, EorVflag)
+function deltav = transfer_deltav(X_from, X_to, plotflag, EorVflag)
 %TRANSFER_DELTAV Calculates delta v given the two states
 % Uses the Rendezvous model assuming no inclination change
 %
 % INPUT
-% X_Earth  - 7x1 double matrix
+% X_from   - 7x1 double matrix
 %            State vector of departure body: [t; x; y; z; vx; vy; vz]
-% X_Venus  - 7x1 double matrix
+% X_to     - 7x1 double matrix
 %            State vector of arrival body: [t; x; y; z; vx; vy; vz]
 % plotflag - bool
 %            True to plot the minimum delta-v cost transfer orbit
@@ -29,14 +29,14 @@ if nargin < 4
     EorVflag = 1;
 end
 
-% Decide if earth or venus target
-if EorVflag
-    X_from = X_Earth;
-    X_to = X_Venus;
-else
-    X_from = X_Venus;
-    X_to = X_Earth;
-end
+% % Decide if earth or venus target
+% if EorVflag
+%     X_from = X_Earth;
+%     X_to = X_Venus;
+% else
+%     X_from = X_Venus;
+%     X_to = X_Earth;
+% end
 
 % Origin State (Solar coordinates)
 t1 = X_from(1);

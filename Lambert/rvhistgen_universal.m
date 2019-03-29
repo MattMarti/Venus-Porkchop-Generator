@@ -96,7 +96,7 @@ end
 sqrtoomu = sqrt(oomu);
 sqrtmuthist = sqrtmu*thist;
 r0dotv0osqrtmu = r0dotv0*sqrtoomu;
-[T, Tp, Tpp] = tof_func(xhist, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K);
+[T, Tp, Tpp] = tof_func(xhist, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 1);
 
 % Solve Universal Time of Flight Equation
 i = 0;
@@ -111,8 +111,8 @@ while i < IMAX_LAMBERT
     xhist_2 = xhist + deltax_2;
     
     % Compute time of flight using both methods
-    [T_1, Tp_1, Tpp_1] = tof_func(xhist_1, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K);
-    [T_2, Tp_2, Tpp_2] = tof_func(xhist_2, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K);
+    T_1 = tof_func(xhist_1, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 0);
+    T_2 = tof_func(xhist_2, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 0);
     
     % Step size halving to prevent overshoot
     alpha = 1;
@@ -122,11 +122,11 @@ while i < IMAX_LAMBERT
         
         % Half step Newton
         xhist_1 = xhist + alpha*deltax_1;
-        [T_1, Tp_1, Tpp_1] = tof_func(xhist_1, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K);
+        T_1 = tof_func(xhist_1, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 0);
         
         % Half step Halley
         xhist_2 = xhist + alpha*deltax_2;
-        [T_2, Tp_2, Tpp_2] = tof_func(xhist_2, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K);
+        T_2 = tof_func(xhist_2, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 0);
         
         % Iterate
         alpha = 0.5*alpha;
@@ -135,18 +135,13 @@ while i < IMAX_LAMBERT
     
     % Decide between using the two methods
     if max(abs(T_2)) <= max(abs(T_1)) % Choose Halley's Method
-        T = T_2;
-        Tp = Tp_2;
-        Tpp = Tpp_2;
         deltax = deltax_2;
         xhist = xhist_2;
     else % Choose Newton's Method
-        T = T_1;
-        Tp = Tp_1;
-        Tpp = Tpp_1;
         deltax = deltax_1;
         xhist = xhist_1;
     end
+    [T, Tp, Tpp] = tof_func(xhist, ooa, r0, sqrtmuthist, r0dotv0osqrtmu, tolz, K, 1);
     
     % Break condition
     if max(abs(deltax))/max(abs(xhist)) < tol || max(abs(T)) == 0
@@ -189,7 +184,7 @@ xrvhist = [rvechist; vvechist];
 end
 
 function [T, Tp, Tpp] = tof_func(xhist, ooa, r0, sqrtmuthist, ...
-                                 r0dotv0osqrtmu, tolz, K)
+                                 r0dotv0osqrtmu, tolz, K, derivflag)
 % Time of flight function
 
 % Compute z
@@ -206,6 +201,13 @@ sqrtmuti = r0dotv0osqrtmu.*xsqhist.*Chist ...
     + (1-r0*ooa).*xsqhist.*xhist.*Shist ...
     + r0.*xhist; % 4.4-14
 T = sqrtmuti - sqrtmuthist;
+
+% Decide to compute derivative
+if ~derivflag
+    Tp = -999; % Designed to break the function if misused
+    Tpp = -999;
+    return;
+end
 
 % Derivative of time of flight
 Tp = xsqhist.*Chist ...

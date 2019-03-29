@@ -44,9 +44,13 @@ max_seconds = MAX_DAYS_TO_TRAVEL*3600*24;
 if EorVflag
     nfrom = size(data_Earth, 1);
     nto = size(data_Venus, 1);
+    data_to = data_Venus;
+    data_from = data_Earth;
 else
     nfrom = size(data_Venus, 1);
     nto = size(data_Earth, 1);
+    data_from = data_Venus;
+    data_to = data_Earth;
 end
 deltav = zeros(nfrom, nto);
 
@@ -56,12 +60,12 @@ progbar = waitbar(0, 'Progress');
 % Loop
 for i = 1:nfrom
     for j = 1:nto
-        if data_Earth(i,1) < data_Venus(j,1) ...
-                && data_Venus(j,1) - data_Earth(i,1) <= max_seconds
+        tof = data_to(j) - data_from(i);
+        if 0< tof && tof < max_seconds
             
             % Compute the delta v
             try
-                deltav(i,j) = transfer_deltav(data_Earth(i,:), data_Venus(j,:), plotflag, EorVflag);
+                deltav(i,j) = transfer_deltav(data_from(i,:), data_to(j,:), plotflag);
             catch err %#ok
                 deltav(i,j) = inf;
             end
