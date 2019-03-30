@@ -61,35 +61,22 @@ progbar = waitbar(0, 'Progress');
 
 % Loop
 for i = 1:nfrom
-    for j = 1:nto
-        tof = data_to(j) - data_from(i);
-        if 0< tof && tof < max_seconds
-            
-            % Compute the delta v for one leg transfer
-            try
-                deltav_1 = transfer_deltav(data_from(i,:), data_to(j,:), EorVflag, plotflag, 1);
-            catch
-                deltav_1 = inf;
-            end
-            
-            % Compute the delta v for two leg transfer
-            try
-                deltav_2 = transfer_deltav_2step(data_from(i,:), data_to(j,:), EorVflag, plotflag, 2);
-            catch
-                deltav_2 = inf;
-            end
-            
-            % Decide if one leg or two leg transfer burn
-            if deltav_1 < deltav_2
-                deltav(i,j) = deltav_1;
-                numlegs(i,j) = 1;
-            else
-                deltav(i,j) = deltav_2;
-                numlegs(i,j) = 2;
-            end
-        else
-            deltav(i,j) = inf;
-            numlegs(i,j) = 0;
+    
+    % Reduce overhead by sampling array before loop
+    data_from_i = data_from(i,:);
+    
+    % Decide if using parallel computation if not drawing plots
+    if plotflag
+        for j = 1:nto
+            data_to_j = data_to(j,:);
+            [deltav(i,j), numlegs(i,j)] ...
+                = secondary_for_loop(data_from_i, data_to_j, EorVflag, plotflag, max_seconds);
+        end
+    else
+        parfor j = 1:nto
+            data_to_j = data_to(j,:);
+            [deltav(i,j), numlegs(i,j)] ...
+                = secondary_for_loop(data_from_i, data_to_j, EorVflag, plotflag, max_seconds);
         end
     end
     
@@ -101,4 +88,39 @@ end
 close(progbar);
 
 
+end
+
+function [deltav, numlegs] ...
+    = secondary_for_loop(data_from_i, data_to_j, EorVflag, ...
+      plotflag, max_seconds)
+
+tof = data_to_j(1) - data_from_i(1);
+if 0< tof && tof < max_seconds
+
+    % Compute the delta v for one leg transfer
+    try
+        deltav_1 = transfer_deltav(data_from_i, data_to_j, EorVflag, plotflag, 1);
+    catch
+        deltav_1 = inf;
+    end
+
+    % Compute the delta v for two leg transfer
+    try
+        deltav_2 = transfer_deltav_2step(data_from_i, data_to_j, EorVflag, plotflag, 2);
+    catch
+        deltav_2 = inf;
+    end
+
+    % Decide if one leg or two leg transfer burn
+    if deltav_1 < deltav_2
+        deltav = deltav_1;
+        numlegs = 1;
+    else
+        deltav = deltav_2;
+        numlegs = 2;
+    end
+else
+    deltav = inf;
+    numlegs = 0;
+end
 end
