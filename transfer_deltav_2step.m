@@ -166,7 +166,6 @@ deltav = deltav_manuever + deltav_capture + deltav_escape;
 % Plot transfer orbit
 if plotflag
     try
-%         plottransferorbit( mu, x_A, t_A, x_C, t_C, v_A1, 1 );
         plottransferorbit_2step( mu, x_A_0, x_A_1, t_A, x_B_1, t_B, ...
             x_C_0, t_C, EorVflag, fignum )
     catch

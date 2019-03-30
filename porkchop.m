@@ -60,28 +60,20 @@ numlegs = zeros(nfrom, nto);
 progbar = waitbar(0, 'Progress');
 
 % Loop
-for i = 1:nfrom
-    
+for ii = 1:nfrom
+
     % Reduce overhead by sampling array before loop
-    data_from_i = data_from(i,:);
-    
-    % Decide if using parallel computation if not drawing plots
-    if plotflag
-        for j = 1:nto
-            data_to_j = data_to(j,:);
-            [deltav(i,j), numlegs(i,j)] ...
-                = secondary_for_loop(data_from_i, data_to_j, EorVflag, plotflag, max_seconds);
-        end
-    else
-        parfor j = 1:nto
-            data_to_j = data_to(j,:);
-            [deltav(i,j), numlegs(i,j)] ...
-                = secondary_for_loop(data_from_i, data_to_j, EorVflag, plotflag, max_seconds);
-        end
+    data_from_ii = data_from(ii,:);
+
+    % Run inner loop
+    for jj = 1:nto
+        data_to_jj = data_to(jj,:);
+        [deltav(ii,jj), numlegs(ii,jj)] ...
+            = secondary_for_loop(data_from_ii, data_to_jj, EorVflag, plotflag, max_seconds);
     end
-    
+
     % Update progress bar
-    waitbar(i/nfrom,progbar);
+    waitbar(ii/nfrom,progbar);
 end
 
 % Close progress bar
