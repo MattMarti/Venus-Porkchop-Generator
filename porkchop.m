@@ -1,4 +1,4 @@
-function deltav = porkchop(data_Earth, data_Venus, plotflag, EorVflag)
+function [deltav, numlegs] = porkchop(data_Earth, data_Venus, plotflag, EorVflag)
 %% PORKCHOP
 % 
 % Uses planetary ephemerides ([X,Y,Z,Vx,Vy,Vz] coordinates) to compute the
@@ -22,6 +22,7 @@ function deltav = porkchop(data_Earth, data_Venus, plotflag, EorVflag)
 % 
 % OUTPUT
 % deltav     - double matrix, nfrom x nto transfer orbit delta v matrix
+% numlegs    - double matrix, number of burns during transfer
 % 
 % DEPENDENCIES
 % transfer_deltav.m v 2018-11-08
@@ -53,6 +54,7 @@ else
     data_to = data_Earth;
 end
 deltav = zeros(nfrom, nto);
+numlegs = zeros(nfrom, nto);
 
 % Open progress bar
 progbar = waitbar(0, 'Progress');
@@ -63,14 +65,31 @@ for i = 1:nfrom
         tof = data_to(j) - data_from(i);
         if 0< tof && tof < max_seconds
             
-            % Compute the delta v
+            % Compute the delta v for one leg transfer
             try
-                deltav(i,j) = transfer_deltav_2step(data_from(i,:), data_to(j,:), EorVflag, plotflag);
+                deltav_1 = transfer_deltav(data_from(i,:), data_to(j,:), EorVflag, plotflag, 1);
             catch
-                deltav(i,j) = inf;
+                deltav_1 = inf;
+            end
+            
+            % Compute the delta v for two leg transfer
+            try
+                deltav_2 = transfer_deltav_2step(data_from(i,:), data_to(j,:), EorVflag, plotflag, 2);
+            catch
+                deltav_2 = inf;
+            end
+            
+            % Decide if one leg or two leg transfer burn
+            if deltav_1 < deltav_2
+                deltav(i,j) = deltav_1;
+                numlegs(i,j) = 1;
+            else
+                deltav(i,j) = deltav_2;
+                numlegs(i,j) = 2;
             end
         else
-            deltav(i,j) = NaN;
+            deltav(i,j) = inf;
+            numlegs(i,j) = 0;
         end
     end
     

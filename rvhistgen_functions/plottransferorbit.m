@@ -1,4 +1,4 @@
-function plottransferorbit( mu, x1, t1, x2, t2, v1, fig )
+function plottransferorbit( mu, x1, t1, x2, t2, v1, EorVflag, fig )
 % Plots the transfer orbit from Earth to Venus
 % 
 % @author: Matt Marti
@@ -33,14 +33,26 @@ hold off
 plot(0,0,'k.')
 hold on
 
-% Plot Earth
-plot(earthorbithist(:,1), earthorbithist(:,2), 'b', 'linewidth', 1);
-plot(x1(1), x1(2), 'b.', 'Markersize', 20)
+if EorVflag
 
-% Plot Venus
-plot(venusorbithist(:,1), venusorbithist(:,2), 'color', [1 .5 0], ...
-    'linewidth', 1);
-plot(x2(1), x2(2), '.', 'color', [1 .5 0], 'Markersize', 20)
+    % Plot Earth
+    plot(earthorbithist(:,1), earthorbithist(:,2), 'b', 'linewidth', 1);
+    plot(x1(1), x1(2), 'b.', 'Markersize', 20)
+
+    % Plot Venus
+    plot(venusorbithist(:,1), venusorbithist(:,2), 'color', [1 .5 0], ...
+        'linewidth', 1);
+    plot(x2(1), x2(2), '.', 'color', [1 .5 0], 'Markersize', 20)
+else
+    % Plot Earth
+    plot(venusorbithist(:,1), venusorbithist(:,2), 'b', 'linewidth', 1);
+    plot(x2(1), x2(2), 'b.', 'Markersize', 20)
+
+    % Plot Venus
+    plot(earthorbithist(:,1), earthorbithist(:,2), 'color', [1 .5 0], ...
+        'linewidth', 1);
+    plot(x1(1), x1(2), '.', 'color', [1 .5 0], 'Markersize', 20)
+end
 
 % Make grid in case of exception
 axis(1e8*[-2, 2, -2, 2])

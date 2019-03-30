@@ -63,7 +63,7 @@ if ~use_mat_file
     
     % Run Delta-V calculations
     tic
-    deltav = porkchop(data_Earth, data_Venus, plot_progress_flag, EorVflag);
+    [deltav, numlegs] = porkchop(data_Earth, data_Venus, plot_progress_flag, EorVflag);
     toc
     
     % Unit convertions to stuff that the save file has
@@ -107,16 +107,19 @@ fprintf('Latest Arrival Date:     %s\n', arrive_late);
 x = min_indeces_from_2020:max_indeces_from_2020;
 y = min_indeces_to_travel:max_indeces_to_travel;
 deltav_resized = zeros(length(x), length(y));
+numlegs_resized = zeros(length(x), length(y));
 for i = 1:length(x)
     for j = 1:length(y)
         ii = min_indeces_from_2020+i;
         jj = ii + y(j);
         deltav_resized(i,j) = deltav( ii, jj );
+        numlegs_resized(i,j) = numlegs( ii, jj );
     end
 end
-clear deltav
+clear deltav numlegs
 deltav = deltav_resized;
-clear deltav_resized
+numlegs = numlegs_resized;
+clear deltav_resized numlegs_resized
 
 % Save data
 if exist('../Data', 'dir')

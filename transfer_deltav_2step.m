@@ -1,4 +1,4 @@
-function deltav = transfer_deltav_2step(X_from, X_to, EorVflag, plotflag)
+function deltav = transfer_deltav_2step(X_from, X_to, EorVflag, plotflag, fignum)
 % Calculates delta v required for interplanetary transfer
 % Computes delta-v required for a planar tranfser orbit first. Then uses
 % that delta-v to compute the three dimensional transfer delta-v using a
@@ -14,6 +14,8 @@ function deltav = transfer_deltav_2step(X_from, X_to, EorVflag, plotflag)
 %            False: Earth is target planet
 % plotflag - bool
 %            True to plot the minimum delta-v cost transfer orbit
+% fignum   - int
+%            Figure number for plot
 % 
 % OUTPUT
 % deltav   - double
@@ -166,7 +168,7 @@ if plotflag
     try
 %         plottransferorbit( mu, x_A, t_A, x_C, t_C, v_A1, 1 );
         plottransferorbit_2step( mu, x_A_0, x_A_1, t_A, x_B_1, t_B, ...
-            x_C_0, t_C, EorVflag, 1 )
+            x_C_0, t_C, EorVflag, fignum )
     catch
         5;
     end
