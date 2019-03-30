@@ -1,4 +1,4 @@
-function deltav = transfer_deltav_2step(X_from, X_to, plotflag, EorVflag)
+function deltav = transfer_deltav_2step(X_from, X_to, EorVflag, plotflag)
 % Calculates delta v required for interplanetary transfer
 % Computes delta-v required for a planar tranfser orbit first. Then uses
 % that delta-v to compute the three dimensional transfer delta-v using a
@@ -9,11 +9,11 @@ function deltav = transfer_deltav_2step(X_from, X_to, plotflag, EorVflag)
 %            State vector of departure body: [t; x; y; z; vx; vy; vz]
 % X_to     - 7x1 double matrix
 %            State vector of arrival body: [t; x; y; z; vx; vy; vz]
-% plotflag - bool
-%            True to plot the minimum delta-v cost transfer orbit
 % EorVflag - bool
 %            True: Venus is target planet
 %            False: Earth is target planet
+% plotflag - bool
+%            True to plot the minimum delta-v cost transfer orbit
 % 
 % OUTPUT
 % deltav   - double
@@ -25,11 +25,6 @@ function deltav = transfer_deltav_2step(X_from, X_to, plotflag, EorVflag)
 % Constants
 global MU_SUN MAX_POSITION_ERROR MUEARTH REARTH SOIVENUS MUVENUS RVENUS SOIEARTH PARABOLIC_N_ITERATIONS_LAMBERT
 mu = MU_SUN;
-
-% Check input
-if nargin < 4
-    EorVflag = 1;
-end
 
 % Origin State (Solar coordinates)
 t_A = X_from(1);
@@ -171,7 +166,7 @@ if plotflag
     try
 %         plottransferorbit( mu, x_A, t_A, x_C, t_C, v_A1, 1 );
         plottransferorbit_2step( mu, x_A_0, x_A_1, t_A, x_B_1, t_B, ...
-            x_C_0, t_C, 1 )
+            x_C_0, t_C, EorVflag, 1 )
     catch
         5;
     end

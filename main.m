@@ -35,7 +35,7 @@ EorVflag = input('Earth to Venus? (1 = E2V, 0 = V2E): '); % True: Destination is
 use_mat_file = 0; % flag to load data directly from file to avoid math
 % matfile_load_name = 'porkchop_Earth_trunc.mat';
 % matfile_load_name = 'porkchop_Venus_trunc.mat';
-plot_progress_flag = input('Draw orbits? (1 = y, 0 = n: '); % Whether to plot orbits during computations
+plot_progress_flag = input('Draw orbits? (1 = y, 0 = n): '); % Whether to plot orbits during computations
 
 % What to plot
 days_per_index = 1; % Number of days per line of data

@@ -65,7 +65,7 @@ for i = 1:nfrom
             
             % Compute the delta v
             try
-                deltav(i,j) = transfer_deltav_2step(data_from(i,:), data_to(j,:), plotflag);
+                deltav(i,j) = transfer_deltav_2step(data_from(i,:), data_to(j,:), EorVflag, plotflag);
             catch
                 deltav(i,j) = inf;
             end
