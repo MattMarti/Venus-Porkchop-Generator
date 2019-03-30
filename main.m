@@ -19,7 +19,7 @@ addpath('Test');
 addpath('Lambert');
 clear, clc
 constants;
-global DELTAV_MAX_CONSIDER
+global DELTAV_MAX_CONSIDER MAX_DAYS_TO_TRAVEL
 
 
 %% Parameters
@@ -42,7 +42,7 @@ plot_progress_flag = 0; % Whether to plot orbits during computations
 min_days_from_2020 = 0*365; % Start date for plot
 max_days_from_2020 = 100*365 + min_days_from_2020; % Number of days on plot
 min_days_to_travel = 1; % Minimum travel time
-max_days_to_travel = 300; % Maximum travel time
+max_days_to_travel = MAX_DAYS_TO_TRAVEL; % Maximum travel time
 
 
 %% Calculations
@@ -69,9 +69,6 @@ if ~use_mat_file
     % Unit convertions to stuff that the save file has
     data_Earth(:,1) = data_Earth(:,1) / 3600/24; % Convert back to days
     data_Venus(:,1) = data_Venus(:,1) / 3600/24; % Convert back to days
-    
-    % Save results to file
-    save porkchop_lastdata.mat data_Earth data_Venus deltav dates_Earth dates_Venus
 else
     
     % Load results from last computation
@@ -109,29 +106,39 @@ fprintf('Latest Arrival Date:     %s\n', arrive_late);
 % Obtain departure and arrival delta_v for selected data
 x = min_indeces_from_2020:max_indeces_from_2020;
 y = min_indeces_to_travel:max_indeces_to_travel;
-deltav_trunc = zeros(length(x), length(y));
+deltav_resized = zeros(length(x), length(y));
 for i = 1:length(x)
     for j = 1:length(y)
         ii = min_indeces_from_2020+i;
         jj = ii + y(j);
-        deltav_trunc(i,j) = deltav( ii, jj );
+        deltav_resized(i,j) = deltav( ii, jj );
     end
 end
-
 clear deltav
+deltav = deltav_resized;
+clear deltav_resized
+
+% Save data
+if exist('../Data', 'dir')
+    mkdir('../Data');
+end
 if EorVflag
-    save porkchop_2Venus
+    save ../Data/porkchop_Earth_to_Venus
 else
-    save porkchop_2Earth
+    save ../Data/porkchop_Venus_to_Earth
 end
 
 % Plot Delta V map
-figure(1)
+figure
 hold off
-contourf(x,y,min(deltav_trunc, DELTAV_MAX_CONSIDER)')
+contourf(x,y,min(deltav, DELTAV_MAX_CONSIDER)')
 colormap jet; % Set the colors of the contour
 colorbar vert; % Make vertical color bar legend
 xlabel(['Days since ' depart_early]);
 ylabel('Travel time (days)')
-title('Delta V Contour Plot')
+if EorVflag
+    title('Earth to Venus Porkchop')
+else
+    title('Venus to Earth Porkchop')
+end
 grid on, grid minor
