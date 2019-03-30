@@ -46,32 +46,31 @@ t_B = t_A + 0.5*tof;
 % Compute "from" planet angular momentum, force destination planet to be
 % coplanar
 h = cross(r_A, v_A_0);
-r_C_approx_1 = r_A(3)*r_C(1)/r_A(1) ...
+r_C_3_1 = r_A(3)*r_C(1)/r_A(1) ...
     - h(2)*( r_A(1)*r_C(2) - r_C(1)*r_A(2) ) / ( h(3)*r_A(1) );
-r_C_approx_2 = r_A(3)*r_C(2)/r_A(2) ...
+r_C_3_2 = r_A(3)*r_C(2)/r_A(2) ...
     + h(1)*( r_A(1)*r_C(2) - r_C(1)*r_A(2) ) / ( h(3)*r_A(2) );
-r_C_approx_3 = ( h(1)*r_A(3)*r_C(1) + h(2)*r_A(3)*r_C(2) ) ...
+r_C_3_3 = ( h(1)*r_A(3)*r_C(1) + h(2)*r_A(3)*r_C(2) ) ...
     / ( h(1)*r_A(1) + h(2)*r_A(2) );
-if (r_C_approx_1 - r_C_approx_2) == 0
-    r_C_approx = r_C_approx_1;
-elseif (r_C_approx_1 - r_C_approx_3) == 0
-    r_C_approx = r_C_approx_1;
-elseif (r_C_approx_2 - r_C_approx_3) == 0
-    r_C_approx = r_C_approx_2;
+if (r_C_3_1 - r_C_3_2) == 0
+    r_C_3_coplanar = r_C_3_1;
+elseif (r_C_3_1 - r_C_3_3) == 0
+    r_C_3_coplanar = r_C_3_1;
+elseif (r_C_3_2 - r_C_3_3) == 0
+    r_C_3_coplanar = r_C_3_2;
 else
-    r_C_approx = (r_C_approx_1 + r_C_approx_2 + r_C_approx_3) / 3;
+    r_C_3_coplanar = (r_C_3_1 + r_C_3_2 + r_C_3_3) / 3;
 end
 
 % Do Lambert Counter-Clockwise only for approximate in-plane manuever
 try
-    r_A_approx = r_A(1:3);
-    r_C_approx = [ r_C(1:2); r_C_approx ];
+    r_C_coplanar = [ r_C(1:2); r_C_3_coplanar ];
     ccwflag = 1;
     tol = 5e-3;
     K = PARABOLIC_N_ITERATIONS_LAMBERT;
-    [v_A_1_approx, ~] = lambert(mu, r_A_approx, r_C_approx, ...
+    [v_A_1, ~] = lambert(mu, r_A, r_C_coplanar, ...
         tof, ccwflag, tol, K);
-    if sum(isnan(v_A_1_approx))
+    if sum(isnan(v_A_1))
         deltav = inf;
         return;
     end
@@ -79,15 +78,14 @@ catch
     deltav = inf;
     return;
 end
+x_A_1 = [ r_A; v_A_1 ];
 
 % Propagate orbit from point A to point C to verify solution accuracy
-xrv = rvhistgen_universal(mu, [r_A_approx; v_A_1_approx], t_A, t_C);
-assert(max(abs(xrv(1:3) - r_C_approx)) < MAX_POSITION_ERROR, ...
+xrv = rvhistgen_universal(mu, x_A_1, t_A, t_C);
+assert(max(abs(xrv(1:3) - r_C_coplanar)) < MAX_POSITION_ERROR, ...
     'Bad Lambert solution');
 
 % Propagate approximate transfer orbit in 3-D to half time of flight
-v_A_1 = [ v_A_1_approx(1:2); x_A_0(6) ]; % Includes Earth z-velocity
-x_A_1 = [ r_A; v_A_1 ];
 x_B_0 = rvhistgen_universal(mu, x_A_1, t_A, t_B);
 r_B = x_B_0(1:3);
 v_B_0 = x_B_0(4:6);
