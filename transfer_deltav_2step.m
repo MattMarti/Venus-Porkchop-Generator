@@ -41,14 +41,34 @@ x_C_0 = X_to(2:7)';
 
 % Partition out positoin vectors and compute time of flight
 r_A = x_A_0(1:3);
+v_A_0 = x_A_0(4:6);
 r_C = x_C_0(1:3);
 tof = t_C - t_A;
 t_B = t_A + 0.5*tof;
 
+% Compute "from" planet angular momentum, force destination planet to be
+% coplanar
+h = cross(r_A, v_A_0);
+r_C_approx_1 = r_A(3)*r_C(1)/r_A(1) ...
+    - h(2)*( r_A(1)*r_C(2) - r_C(1)*r_A(2) ) / ( h(3)*r_A(1) );
+r_C_approx_2 = r_A(3)*r_C(2)/r_A(2) ...
+    + h(1)*( r_A(1)*r_C(2) - r_C(1)*r_A(2) ) / ( h(3)*r_A(2) );
+r_C_approx_3 = ( h(1)*r_A(3)*r_C(1) + h(2)*r_A(3)*r_C(2) ) ...
+    / ( h(1)*r_A(1) + h(2)*r_A(2) );
+if (r_C_approx_1 - r_C_approx_2) == 0
+    r_C_approx = r_C_approx_1;
+elseif (r_C_approx_1 - r_C_approx_3) == 0
+    r_C_approx = r_C_approx_1;
+elseif (r_C_approx_2 - r_C_approx_3) == 0
+    r_C_approx = r_C_approx_2;
+else
+    r_C_approx = (r_C_approx_1 + r_C_approx_2 + r_C_approx_3) / 3;
+end
+
 % Do Lambert Counter-Clockwise only for approximate in-plane manuever
 try
-    r_A_approx = [ r_A(1:2); 0 ];
-    r_C_approx = [ r_C(1:2); 0 ];
+    r_A_approx = r_A(1:3);
+    r_C_approx = [ r_C(1:2); r_C_approx ];
     ccwflag = 1;
     tol = 5e-3;
     K = PARABOLIC_N_ITERATIONS_LAMBERT;

@@ -29,16 +29,16 @@ fname_Venus = 'Ephemeris/Positions_until_2125/Venus.txt'; % Venus Ephemerides fi
 fname_Earth = 'Ephemeris/Positions_until_2125/Earth.txt'; % Earth Ephemerides file
 % fname_Venus = 'Ephemeris/Positions_Truncated/Venus.csv'; % Venus Ephemerides file
 % fname_Earth = 'Ephemeris/Positions_Truncated/Earth.csv'; % Earth Ephemerides file
-EorVflag = 1; % True: Destination is venus.
-days_per_index = 1; % Number of days per line of data
+EorVflag = input('Earth to Venus? (1 = E2V, 0 = V2E): '); % True: Destination is venus.
 
 % How to do the delta-v calculations
 use_mat_file = 0; % flag to load data directly from file to avoid math
 % matfile_load_name = 'porkchop_Earth_trunc.mat';
 % matfile_load_name = 'porkchop_Venus_trunc.mat';
-plot_progress_flag = 0; % Whether to plot orbits during computations
+plot_progress_flag = input('Draw orbits? (1 = y, 0 = n: '); % Whether to plot orbits during computations
 
 % What to plot
+days_per_index = 1; % Number of days per line of data
 min_days_from_2020 = 0*365; % Start date for plot
 max_days_from_2020 = 100*365 + min_days_from_2020; % Number of days on plot
 min_days_to_travel = 1; % Minimum travel time
