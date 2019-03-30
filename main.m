@@ -27,8 +27,8 @@ global DELTAV_MAX_CONSIDER MAX_DAYS_TO_TRAVEL
 % Ephemeris files parameters
 fname_Venus = 'Ephemeris/Positions_until_2125/Venus.txt'; % Venus Ephemerides file
 fname_Earth = 'Ephemeris/Positions_until_2125/Earth.txt'; % Earth Ephemerides file
-% fname_Venus = 'Ephemeris/Positions_Truncated/Venus.csv'; % Venus Ephemerides file
-% fname_Earth = 'Ephemeris/Positions_Truncated/Earth.csv'; % Earth Ephemerides file
+% fname_Venus = 'Ephemeris/Positions_Smaller/Venus.csv'; % Venus Ephemerides file
+% fname_Earth = 'Ephemeris/Positions_Smaller/Earth.csv'; % Earth Ephemerides file
 EorVflag = input('Earth to Venus? (1 = E2V, 0 = V2E): '); % True: Destination is venus.
 
 % How to do the delta-v calculations
