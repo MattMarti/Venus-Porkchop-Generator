@@ -1,5 +1,5 @@
 function [sinceStart, travelt, dv] ...
-    = findOptimal(sinceStart, travelt, deltav_trunc)
+    = findOptimal(sinceStart, travelt, deltav)
 % Computes the minimum delta-V transfer times and delta-v
 % Uses an initial estimate obtained from the porkchop plot to search for
 % the minimum delta-v of the transfer orbit.
@@ -9,7 +9,7 @@ function [sinceStart, travelt, dv] ...
 %                Days since start of Delta-V mesh
 % travelt      - int
 %                Travel time
-% deltav_trunc - double matrix
+% deltav       - double matrix
 %                Precomputed Delta-V mesh
 % 
 % @return
@@ -43,22 +43,22 @@ while 1
     % Look horizontal
     if i - 1 < 0
         % Intentionally left blank
-    elseif i + 1 > size(deltav_trunc,1)
+    elseif i + 1 > size(deltav,1)
         % Intentionally left blank
-    elseif deltav_trunc(i-1,j) <= deltav_trunc(i,j)
+    elseif deltav(i-1,j) <= deltav(i,j)
         i = i - 1;
-    elseif deltav_trunc(i+1,j) <= deltav_trunc(i,j)
+    elseif deltav(i+1,j) <= deltav(i,j)
         i = i + 1;
     end
     
     % Look horizontal
     if j - 1 < 0
         % Intentionally left blank
-    elseif j + 1 > size(deltav_trunc,2)
+    elseif j + 1 > size(deltav,2)
         % Intentionally left blank
-    elseif deltav_trunc(i,j-1) <= deltav_trunc(i,j)
+    elseif deltav(i,j-1) <= deltav(i,j)
         j = j - 1;
-    elseif deltav_trunc(i,j+1) <= deltav_trunc(i,j)
+    elseif deltav(i,j+1) <= deltav(i,j)
         j = j + 1;
     end
 end
@@ -66,7 +66,7 @@ end
 % Assign output
 sinceStart = i;
 travelt = j;
-dv = deltav_trunc(i,j);
+dv = deltav(i,j);
 
 % Print output
 fprintf('Days Since:  %.0f\n', sinceStart);
